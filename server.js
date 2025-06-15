@@ -45,7 +45,7 @@ app.use("/api/messages", messageRoutes);
 // 	});
 // }
 
-app.get("/", (req, res) => {
+app.get("/test", (req, res) => {
 	res.send("Api is running");
 });
 
