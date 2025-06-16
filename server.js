@@ -26,7 +26,7 @@ app.use(express.urlencoded({ extended: true })); // To parse form data in the re
 app.use(cookieParser());
 
 app.use(cors({
-	origin: "*",
+	origin: ["https://orial-comunity-frontend-ms04oypj0-shareens-projects.vercel.app", "http://localhost:3000"],
 	credentials: true,
 }));
 // Routes
