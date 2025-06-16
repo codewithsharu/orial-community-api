@@ -3,8 +3,15 @@ import jwt from "jsonwebtoken";
 
 const protectRoute = async (req, res, next) => {
 	try {
-		const token = req.cookies.jwt;
-		console.log("JWT Token received in protectRoute:", token);
+		const authHeader = req.headers.authorization;
+
+		if (!authHeader || !authHeader.startsWith("Bearer ")) {
+			return res.status(401).json({ message: "Unauthorized: No token provided or invalid format" });
+		}
+
+		const token = authHeader.split(" ")[1];
+
+		console.log("JWT Token received in protectRoute (from header):", token);
 
 		if (!token) return res.status(401).json({ message: "Unauthorized" });
 
