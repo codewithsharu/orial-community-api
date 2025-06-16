@@ -28,6 +28,8 @@ app.use(cookieParser());
 app.use(cors({
 	origin: ["https://orial-comunity-frontend-ms04oypj0-shareens-projects.vercel.app", "http://localhost:3000", "https://orial-comunity-frontend.vercel.app"],
 	credentials: true,
+	allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
+	methods: ["GET", "POST", "PUT", "DELETE"],
 }));
 // Routes
 app.use("/api/users", userRoutes);
