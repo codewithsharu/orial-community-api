@@ -5,7 +5,7 @@ import { v2 as cloudinary } from "cloudinary";
 const createPost = async (req, res) => {
 	try {
 		const { postedBy, text } = req.body;
-		let { img } = req.body;
+		let { img ,video } = req.body;
 
 		if (!postedBy || !text) {
 			return res.status(400).json({ error: "Postedby and text fields are required" });
@@ -29,8 +29,12 @@ const createPost = async (req, res) => {
 			const uploadedResponse = await cloudinary.uploader.upload(img);
 			img = uploadedResponse.secure_url;
 		}
+		if (video) {
+			const uploadedResponse = await cloudinary.uploader.upload(video);
+			img = uploadedResponse.secure_url;
+		}
 
-		const newPost = new Post({ postedBy, text, img });
+		const newPost = new Post({ postedBy, text, img ,video });
 		await newPost.save();
 
 		res.status(201).json(newPost);
@@ -42,7 +46,7 @@ const createPost = async (req, res) => {
 
 const getPost = async (req, res) => {
 	try {
-		const post = await Post.findById(req.params.id);
+		const post = await Post.findById(req.params.id).populate("postedBy", "username profilePic");
 
 		if (!post) {
 			return res.status(404).json({ error: "Post not found" });
@@ -142,9 +146,10 @@ const getFeedPosts = async (req, res) => {
 			return res.status(404).json({ error: "User not found" });
 		}
 
-		const following = user.following;
-
-		const feedPosts = await Post.find({ postedBy: { $in: following } }).sort({ createdAt: -1 });
+		// Get all posts, sorted by creation date (newest first)
+		const feedPosts = await Post.find()
+			.sort({ createdAt: -1 })
+			.populate('postedBy', 'username profilePic');
 
 		res.status(200).json(feedPosts);
 	} catch (err) {
